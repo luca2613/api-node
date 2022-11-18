@@ -1,159 +1,116 @@
-const mysql = require('../mysql').pool;
+const mysql = require('../mysql');
 
-exports.getLivros =  (req, res, next) => {
+exports.getLivros =  async (req, res, next) => {
+    try {
+        const query = `SELECT livro.cd_autor,livro.cd_categoria,nm_categoria,nm_autor,cd_livro,cd_img_livro,nm_livro,dt_lancamento
+        FROM livro JOIN autor ON livro.cd_autor = autor.cd_autor
+        JOIN categoria ON livro.cd_categoria = categoria.cd_categoria;`;
 
-    mysql.getConnection((error, conn) => {
-        if(error) {return res.status(500).send({error: error})}
-        conn.query(
-            `SELECT livro.cd_autor,livro.cd_categoria,nm_categoria,nm_autor,cd_livro,cd_img_livro,nm_livro,dt_lancamento
-            FROM livro JOIN autor ON livro.cd_autor = autor.cd_autor
-            JOIN categoria ON livro.cd_categoria = categoria.cd_categoria`,
-            (error, resultado, fields) => {
-                conn.release();
-                if(error) {return res.status(500).send({error: error})}
-                return res.status(200).send(resultado)
-            }
-        )
-    });
+        const response = await mysql.execute(query)
+        return res.status(200).send(response);
+    } catch (error) {
+        return res.status(500).send({ error: error });
+    }
 
 }
 
-exports.getLivrosByLast =  (req, res, next) => {
+exports.getLivrosByLast = async (req, res, next) => {
+    try {
+        const query = `SELECT livro.cd_autor,livro.cd_categoria,nm_categoria,nm_autor,cd_livro,cd_img_livro,nm_livro,dt_lancamento
+        FROM livro JOIN autor ON livro.cd_autor = autor.cd_autor
+        JOIN categoria ON livro.cd_categoria = categoria.cd_categoria
+        order by dt_lancamento desc limit 5;`;
 
-    mysql.getConnection((error, conn) => {
-        if(error) {return res.status(500).send({error: error})}
-        conn.query(
-            `SELECT livro.cd_autor,livro.cd_categoria,nm_categoria,nm_autor,cd_livro,cd_img_livro,nm_livro,dt_lancamento
-            FROM livro JOIN autor ON livro.cd_autor = autor.cd_autor
-            JOIN categoria ON livro.cd_categoria = categoria.cd_categoria
-            order by dt_lancamento desc limit 5;`,
-            (error, resultado) => {
-                conn.release();
-                if(error) {return res.status(500).send({error: error})}
-                return res.status(200).send(resultado)
-            }
-        )
-    });
-
+        const response = await mysql.execute(query)
+        return res.status(200).send(response);
+    } catch (error) {
+        return res.status(500).send({ error: error });
+    }
 }
 
-exports.getLivroById = (req, res, next) => {
-    mysql.getConnection((error, conn) => {
-        if(error) {return res.status(500).send({error: error})}
-        conn.query(
-            `SELECT livro.cd_autor,livro.cd_categoria,nm_categoria,nm_autor,cd_livro,cd_img_livro,nm_livro,ds_livro
-            FROM livro JOIN autor ON livro.cd_autor = autor.cd_autor
-            JOIN categoria ON livro.cd_categoria = categoria.cd_categoria
-            WHERE cd_livro = ?`,
-            [req.params.id_livro],
-            (error, resultado, fields) => {
-                conn.release();
-                if(error) {return res.status(500).send({error: error})}
-                return res.status(200).send(resultado)
-            }
-        );
-    });
+exports.getLivroById = async (req, res, next) => {
+    try {
+        const query = `SELECT livro.cd_autor,livro.cd_categoria,nm_categoria,nm_autor,cd_livro,cd_img_livro,nm_livro,ds_livro
+        FROM livro JOIN autor ON livro.cd_autor = autor.cd_autor
+        JOIN categoria ON livro.cd_categoria = categoria.cd_categoria
+        WHERE cd_livro = ?;`;
+
+        const response = await mysql.execute(query, [req.params.id_livro])
+        return res.status(200).send(response);
+    } catch (error) {
+        return res.status(500).send({ error: error });
+    }
 }
 
-exports.getLivroByAutor = (req, res, next) => {
-    mysql.getConnection((error, conn) => {
-        if(error) {return res.status(500).send({error: error})}
-        conn.query(
-            'SELECT * FROM LIVRO WHERE cd_autor = ?;',
-            [req.params.id_autor],
-            (error, resultado, fields) => {
-                conn.release();
-                if(error) {return res.status(500).send({error: error})}
-                return res.status(200).send(resultado)
-            }
-        )
-    });
+exports.getLivroByAutor = async (req, res, next) => {
+    try {
+        const query = 'SELECT * FROM LIVRO WHERE cd_autor = ?;';
+
+        const response = await mysql.execute(query, [req.params.id_autor])
+        return res.status(200).send(response);
+    } catch (error) {
+        return res.status(500).send({ error: error });
+    }
 }
 
-exports.getLivroByCategoria = (req, res, next) => {
-    mysql.getConnection((error, conn) => {
-        if(error) {return res.status(500).send({error: error})}
-        conn.query(
-            `SELECT livro.cd_autor,livro.cd_categoria,nm_categoria,nm_autor,cd_livro,cd_img_livro,nm_livro,dt_lancamento
-            FROM livro JOIN autor ON livro.cd_autor = autor.cd_autor
-            JOIN categoria ON livro.cd_categoria = categoria.cd_categoria
-            WHERE nm_categoria = ?`,
-            [req.params.nm_categoria],
-            (error, resultado, fields) => {
-                conn.release();
-                if(error) {return res.status(500).send({error: error})}
-                return res.status(200).send(resultado)
-            }
-        )
-    });
+exports.getLivroByCategoria = async (req, res, next) => {
+    try {
+        const query = `SELECT livro.cd_autor,livro.cd_categoria,nm_categoria,nm_autor,cd_livro,cd_img_livro,nm_livro,dt_lancamento
+        FROM livro JOIN autor ON livro.cd_autor = autor.cd_autor
+        JOIN categoria ON livro.cd_categoria = categoria.cd_categoria
+        WHERE nm_categoria = ?`;
+
+        const response = await mysql.execute(query, [req.params.nm_categoria])
+        return res.status(200).send(response);
+    } catch (error) {
+        return res.status(500).send({ error: error });
+    }
 }
 
-exports.postLivro = (req, res, next) => {
-    mysql.getConnection((error, conn) => {
-        if(error) {return res.status(500).send({error: error})}
-        conn.query(
-            'INSERT INTO LIVRO (cd_autor, cd_categoria, nm_livro, ds_livro, dt_lancamento) VALUES (?,?,?,?,?)',
-            [
+exports.postLivro = async (req, res, next) => {
+    try {
+        const query = `INSERT INTO LIVRO (cd_autor, cd_categoria, nm_livro, ds_livro, dt_lancamento) VALUES (?,?,?,?,?)`;
+
+        const response = await mysql.execute(query, [
                 req.autor.data.id_autor,
                 req.body.categoria, 
                 req.body.nome, 
                 req.body.descricao, 
                 req.body.lancamento,
             ],
-            (error, resultado, field) => {
-                conn.release(); // liberar conexao
-                if(error) {return res.status(500).send({error: error})}
-                console.log(req.autor.id_autor);
-                res.status(201).send({
-                    mensagem: 'livro cadastrado',
-                    id_livro: resultado.insertId
-                });
-            }
         )
-    });
+        return res.status(201).send({mensagem: 'livro cadastrado',id_livro: response.insertId});
+    } catch (error) {
+        return res.status(500).send({ error: error });
+    }
 }
 
-exports.patchLivro = (req, res, next) => {
-    
-    mysql.getConnection((error, conn) => {
-        if(error) {return res.status(500).send({error: error})}
-        conn.query(
-            `UPDATE livro set 
-            cd_categoria    = ?,
-            cd_autor        = ?,
-            nm_livro        = ?,
-            ds_livro        = ?,
-            dt_lancamento   = ?
-            WHERE cd_livro = ?`,
-            [req.body.categoria, req.body.autor, req.body.nome, req.body.descricao, req.body.lancamento, req.params.id_livro],
-            (error, resultado, field) => {
-                conn.release(); // liberar conexao
-                if(error) {return res.status(500).send({error: error})}
+exports.patchLivro = async (req, res, next) => {
+    try {
+        const query = `UPDATE livro set 
+                        cd_categoria    = ?,
+                        cd_autor        = ?,
+                        nm_livro        = ?,
+                        ds_livro        = ?,
+                        dt_lancamento   = ?
+                        WHERE cd_livro = ?`;
 
-                res.status(202).send({
-                    mensagem: 'livro alterado',
-                    id_livro: resultado.insertId
-                });
-            }
+        const response = await mysql.execute(query,
+        [req.body.categoria, req.body.autor, req.body.nome, req.body.descricao, req.body.lancamento, req.params.id_livro]
         )
-    });
+        return res.status(202).send({mensagem: 'livro alterado',id_livro: req.params.id_livro});
+    } catch (error) {
+        return res.status(500).send({ error: error });
+    }
 }
 
-exports.deleteLivro = (req, res, next) => {
-    mysql.getConnection((error, conn) => {
-        if(error) {return res.status(500).send({error: error})}
-        conn.query(
-            `DELETE FROM LIVRO WHERE cd_livro = ?`,
-            [req.params.id_livro],
-            (error, resultado, field) => {
-                conn.release(); // liberar conexao
-                if(error) {return res.status(500).send({error: error})}
+exports.deleteLivro = async (req, res, next) => {
+    try {
+        const query = `DELETE FROM LIVRO WHERE cd_livro = ?`;
 
-                res.status(202).send({
-                    mensagem: 'livro deletado',
-                    id_livro: resultado.insertId
-                });
-            }
-        )
-    });
+        const response = await mysql.execute(query,[req.params.id_livro])
+        return res.status(202).send({mensagem: 'livro deletado',id_livro: req.params.id_livro});
+    } catch (error) {
+        return res.status(500).send({ error: error });
+    }
 }
