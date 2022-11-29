@@ -53,6 +53,21 @@ exports.getLivroByAutor = async (req, res, next) => {
     }
 }
 
+exports.getLivroByBusca = async (req, res, next) => {
+    try {
+        let query = 'SELECT livro.cd_autor,livro.cd_categoria,nm_categoria,nm_autor,cd_livro,cd_img_livro,nm_livro,dt_lancamento ';
+        query += 'FROM livro JOIN autor ON livro.cd_autor = autor.cd_autor ';
+        query += 'JOIN categoria ON livro.cd_categoria = categoria.cd_categoria ';
+        query += 'WHERE nm_livro like "%' + req.params.busca + '%"';
+        query += 'OR nm_autor like "%' + req.params.busca + '%"';
+
+        const response = await mysql.execute(query)
+        return res.status(200).send(response);
+    } catch (error) {
+        return res.status(500).send({ error: error });
+    }
+}
+
 exports.getLivroByCategoria = async (req, res, next) => {
     try {
         const query = `SELECT livro.cd_autor,livro.cd_categoria,nm_categoria,nm_autor,cd_livro,cd_img_livro,nm_livro,dt_lancamento

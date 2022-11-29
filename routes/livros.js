@@ -1,9 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
 const login = require('../middleware/login');
 
 const LivrosController = require('../controllers/livros-controller');
+
+router.get('/', LivrosController.getLivros); 
+router.get('/lastLivros', LivrosController.getLivrosByLast); 
+router.get('/:id_livro', LivrosController.getLivroById); 
+router.get('/livrosAutor/:id_autor', LivrosController.getLivroByAutor);
+router.get('/categoria/:nm_categoria', LivrosController.getLivroByCategoria); 
+router.get('/busca/:busca', LivrosController.getLivroByBusca);
+router.post('/', login, LivrosController.postLivro); 
+router.patch('/:id_livro',login, LivrosController.patchLivro);
+router.delete('/:id_livro',login, LivrosController.deleteLivro);
+
+module.exports = router; // exportando modulo router
 
 // const storage = multer.diskStorage({
 //     destination: function(req, file, callBack) {
@@ -15,17 +26,6 @@ const LivrosController = require('../controllers/livros-controller');
 // })
 
 // const upload = multer({storage: storage});
-
-router.get('/', LivrosController.getLivros); 
-router.get('/lastLivros', LivrosController.getLivrosByLast); 
-router.get('/:id_livro', LivrosController.getLivroById); 
-router.get('/livrosAutor/:id_autor', LivrosController.getLivroByAutor);
-router.get('/categoria/:nm_categoria', LivrosController.getLivroByCategoria); 
-router.post('/', login, LivrosController.postLivro); 
-router.patch('/:id_livro',login, LivrosController.patchLivro);
-router.delete('/:id_livro',login, LivrosController.deleteLivro);
-
-module.exports = router; // exportando modulo router
 
 
 
