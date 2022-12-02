@@ -1,11 +1,13 @@
 const mysql = require('mysql');
 
+const config = require('./config.js');
+
 var pool = mysql.createPool({
-    "user" : "root",
-    "password" : "",
-    "database" : "readnow",
-    "host" : "localhost",
-    "port" : 3306
+    "user" : config.DB_USER,
+    "password" : config.DB_PASSWORD,
+    "database" : config.DB_NAME,
+    "host" : config.DB_HOST,
+    "port" : config.DB_PORT
 });
 
 exports.execute = (query, params=[]) => {
