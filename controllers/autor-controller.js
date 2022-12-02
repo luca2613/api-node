@@ -25,6 +25,16 @@ exports.getAutorById =  async (req, res, next) => {
     }
 }
 
+exports.getAutorPerfil =  async (req, res, next) => {
+    try {
+        const query = `SELECT email,senha,nm_autor,ds_autor,cd_img_autor FROM autor WHERE cd_autor = ?;`;
+        const response = await mysql2.execute(query, [req.params.id_autor]);
+        return res.status(200).send(response);
+    } catch (error) {
+        return res.status(500).send({ error: error });
+    }
+}
+
 const storage = multer.diskStorage({
     destination: (req, file, callBack) => {
         callBack(null, 'uploads')

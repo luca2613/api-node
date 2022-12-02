@@ -135,7 +135,7 @@ exports.patchLivro = async (req, res, next) => {
         livro = req.body.nm_livro;
         return res.status(201).send({status: true});
     } catch (error) {
-        return res.status(500).send({ error: error });
+        return res.status(500).send({ status: false });
     }
 }
 
