@@ -1,4 +1,5 @@
 const mysql = require('../mysql');
+const multer = require('multer');
 
 exports.getLivros =  async (req, res, next) => {
     try {
@@ -82,38 +83,57 @@ exports.getLivroByCategoria = async (req, res, next) => {
     }
 }
 
+
+const storage = multer.diskStorage({
+    destination: (req, file, callBack) => {
+        callBack(null, 'uploads')
+    },
+    filename: (req, file, callBack) => {
+        callBack(null, `${file.originalname}`)
+    }
+})
+
+exports.upload = multer({storage: storage});
+
 exports.postLivro = async (req, res, next) => {
     try {
-        const query = `INSERT INTO LIVRO (cd_autor, cd_categoria, nm_livro, ds_livro, dt_lancamento) VALUES (?,?,?,?,?)`;
+        const query = `INSERT INTO LIVRO (cd_autor, cd_categoria, nm_livro, ds_livro, dt_lancamento,cd_img_livro) VALUES (?,?,?,?,?,?)`;
 
         const response = await mysql.execute(query, [
-                req.autor.data.id_autor,
-                req.body.categoria, 
-                req.body.nome, 
-                req.body.descricao, 
-                req.body.lancamento,
+                req.body.cd_autor,
+                req.body.cd_categoria, 
+                req.body.nm_livro, 
+                req.body.ds_livro, 
+                req.body.dt_lancamento,
+                req.body.cd_img_livro
             ],
         )
-        return res.status(201).send({mensagem: 'livro cadastrado',id_livro: response.insertId});
+        return res.status(201).send({mensagem: 'livro cadastrado'});
     } catch (error) {
-        return res.status(500).send({ error: error });
+        return res.status(500).send(error);
     }
 }
 
+exports.postArquivo = (req, res, next) => {
+    const file = req.file;
+    console.log(file.filename);
+    if (!file) {
+      const error = new Error('No File')
+      error.httpStatusCode = 400
+      return next(error)
+    }
+      res.send(file);
+  }
+
 exports.patchLivro = async (req, res, next) => {
     try {
-        const query = `UPDATE livro set 
-                        cd_categoria    = ?,
-                        cd_autor        = ?,
-                        nm_livro        = ?,
-                        ds_livro        = ?,
-                        dt_lancamento   = ?
-                        WHERE cd_livro = ?`;
+        const query = `UPDATE livro set cd_categoria = ?, nm_livro = ?, ds_livro = ?, dt_lancamento = ?,cd_img_livro = ? WHERE cd_livro = ?`;
 
         const response = await mysql.execute(query,
-        [req.body.categoria, req.body.autor, req.body.nome, req.body.descricao, req.body.lancamento, req.params.id_livro]
+        [req.body.cd_categoria, req.body.nm_livro, req.body.ds_livro, req.body.dt_lancamento,req.body.cd_img_livro, req.params.cd_livro]
         )
-        return res.status(202).send({mensagem: 'livro alterado',id_livro: req.params.id_livro});
+        livro = req.body.nm_livro;
+        return res.status(201).send({status: true});
     } catch (error) {
         return res.status(500).send({ error: error });
     }
