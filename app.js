@@ -30,7 +30,7 @@ app.use('/uploads', express.static('uploads'));
 
 //quando não encontrar rota
 app.use((req, res, next) => {
-    const erro = new Error('Não encontrado');
+    const erro = new Error('Rota não encontrada');
     erro.status = 404;
     next(erro);
 });

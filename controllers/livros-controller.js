@@ -45,7 +45,7 @@ exports.getLivroById = async (req, res, next) => {
 
 exports.getLivroByAutor = async (req, res, next) => {
     try {
-        const query = 'SELECT * FROM LIVRO WHERE cd_autor = ?;';
+        const query = 'SELECT * FROM livro WHERE cd_autor = ?;';
 
         const response = await mysql.execute(query, [req.params.id_autor])
         return res.status(200).send(response);
@@ -97,7 +97,7 @@ exports.upload = multer({storage: storage});
 
 exports.postLivro = async (req, res, next) => {
     try {
-        const query = `INSERT INTO LIVRO (cd_autor, cd_categoria, nm_livro, ds_livro, dt_lancamento,cd_img_livro) VALUES (?,?,?,?,?,?)`;
+        const query = `INSERT INTO livro (cd_autor, cd_categoria, nm_livro, ds_livro, dt_lancamento,cd_img_livro) VALUES (?,?,?,?,?,?)`;
 
         const response = await mysql.execute(query, [
                 req.body.cd_autor,
@@ -141,7 +141,7 @@ exports.patchLivro = async (req, res, next) => {
 
 exports.deleteLivro = async (req, res, next) => {
     try {
-        const query = `DELETE FROM LIVRO WHERE cd_livro = ?`;
+        const query = `DELETE FROM livro WHERE cd_livro = ?`;
 
         const response = await mysql.execute(query,[req.params.id_livro])
         return res.status(202).send({mensagem: 'livro deletado',id_livro: req.params.id_livro});
