@@ -83,6 +83,19 @@ exports.getLivroByCategoria = async (req, res, next) => {
     }
 }
 
+exports.getLivroRecomendado = async (req, res, next) => {
+    try {
+        const query = `SELECT livro.cd_autor,livro.cd_categoria,nm_categoria,nm_autor,cd_livro,cd_img_livro,nm_livro,dt_lancamento
+        FROM livro JOIN autor ON livro.cd_autor = autor.cd_autor
+        JOIN categoria ON livro.cd_categoria = categoria.cd_categoria
+        WHERE nm_categoria = ? and cd_livro != ?`;
+
+        const response = await mysql.execute(query, [req.params.nm_categoria, req.params.cd_livro])
+        return res.status(200).send(response);
+    } catch (error) {
+        return res.status(500).send({ error: error });
+    }
+}
 
 const storage = multer.diskStorage({
     destination: (req, file, callBack) => {

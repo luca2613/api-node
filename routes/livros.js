@@ -9,6 +9,7 @@ router.get('/lastLivros', LivrosController.getLivrosByLast);
 router.get('/:id_livro', LivrosController.getLivroById); 
 router.get('/livrosAutor/:id_autor', LivrosController.getLivroByAutor);
 router.get('/categoria/:nm_categoria', LivrosController.getLivroByCategoria); 
+router.get('/recomendado/:nm_categoria/:cd_livro', LivrosController.getLivroRecomendado);
 router.get('/busca/:busca', LivrosController.getLivroByBusca);
 router.post('/file', LivrosController.upload.single('file'), LivrosController.postArquivo)
 router.post('/', LivrosController.postLivro, login); 
