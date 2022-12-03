@@ -1,10 +1,10 @@
 {
     "env" : {
         "MYSQL_USER" : "root",
-        "MYSQL_PASSWORD" : "",
-        "MYSQL_DATABASE" : "readnow",
-        "MYSQL_HOST" : "localhost",
-        "MYSQL_PORT" : 3300, 
+        "MYSQL_PASSWORD" : "1c6h8fX7tvJMWDhl8gOp",
+        "MYSQL_DATABASE" : "railway",
+        "MYSQL_HOST" : "containers-us-west-124.railway.app",
+        "MYSQL_PORT" : 6309, 
         "JWT_KEY" : "segredo"
     }
     
